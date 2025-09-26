@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Video Games 🎮</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <style>
+        :root {
+            --pico-primary: #1a4d2e;
+            --pico-primary-hover: #0d2818;
+            --pico-primary-inverse: #ffffff;
+            --pico-secondary: #2d5a3d;
+            --pico-success: #4ade80;
+            --pico-warning: #ffd700;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--pico-primary-hover) 0%, var(--pico-primary) 100%);
+            padding: 4rem 0;
+            text-align: center;
+            border-bottom: 1px solid var(--pico-border-color);
+        }
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        .game-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            height: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            border-color: var(--pico-warning);
+        }
+        .game-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px 8px 0 0;
+        }
+        .rating {
+            color: var(--pico-warning);
+            font-weight: bold;
+        }
+        .price-range {
+            color: var(--pico-success);
+            font-weight: bold;
+        }
+        .specialties {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .specialty-tag {
+            background: var(--pico-secondary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        .loading {
+            text-align: center;
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="container">
+            <h1>🎮 Top Video Games</h1>
+            <p>Browse some of the most acclaimed games to play right now</p>
+        </div>
+    </div>
+
+    <main class="container">
+        <div id="loading" class="loading">
+            <p>Loading games...</p>
+        </div>
+        
+        <div id="games" class="grid" style="display: none;">
+            <!-- Game cards will be dynamically inserted here -->
+        </div>
+    </main>
+
+    <script>
+        // Fetch and display games
+        async function loadGames() {
+            try {
+                const response = await fetch('/api/games');
+                const games = await response.json();
+                
+                const container = document.getElementById('games');
+                const loading = document.getElementById('loading');
+                
+                loading.style.display = 'none';
+                container.style.display = 'grid';
+                
+                games.forEach(game => {
+                    const card = createGameCard(game);
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Error loading games:', error);
+                document.getElementById('loading').innerHTML = '<p>Error loading games. Please try again later.</p>';
+            }
+        }
+
+        function createGameCard(game) {
+            const card = document.createElement('article');
+            card.className = 'game-card';
+            card.onclick = () => window.location.href = `/games/${game.id}`;
+            
+            card.innerHTML = `
+                <img src="${game.image}" alt="${game.title}" loading="lazy">
+                <div style="padding: 1rem;">
+                    <h3>${game.title}</h3>
+                    <p><strong>🧩</strong> ${game.genre} | <strong>🖥️</strong> ${game.platform}</p>
+                    <p><span class="rating">⭐ ${game.rating}</span> | <span class="price-range">${game.price}</span></p>
+                    <div class="specialties">
+                        <span class="specialty-tag">${game.developer}</span>
+                        <span class="specialty-tag">${game.releaseYear}</span>
+                        ${game.multiplayer ? '<span class="specialty-tag">Multiplayer</span>' : '<span class="specialty-tag">Single Player</span>'}
+                    </div>
+                    <p style="margin-top: 1rem; color: #6c757d;">${game.description.substring(0, 100)}...</p>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Load games when page loads
+        document.addEventListener('DOMContentLoaded', loadGames);
+    </script>
+</body>
+</html>

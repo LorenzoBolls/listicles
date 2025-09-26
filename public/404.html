@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found - Games</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <style>
+        :root {
+            --pico-primary: #1a4d2e;
+            --pico-primary-hover: #0d2818;
+            --pico-primary-inverse: #ffffff;
+            --pico-secondary: #2d5a3d;
+            --pico-success: #4ade80;
+            --pico-warning: #ffd700;
+            --pico-info: #3b82f6;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--pico-primary-hover) 0%, var(--pico-primary) 100%);
+            padding: 4rem 0;
+            text-align: center;
+            border-bottom: 1px solid var(--pico-border-color);
+        }
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        .error-content {
+            text-align: center;
+            padding: 4rem 0;
+        }
+        .coffee-icon {
+            font-size: 6rem;
+            margin-bottom: 2rem;
+            opacity: 0.3;
+        }
+        .suggestions {
+            padding: 2rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+            text-align: left;
+        }
+        .suggestions h3 {
+            color: var(--pico-info);
+            margin-bottom: 1rem;
+        }
+        .suggestions ul {
+            list-style: none;
+            padding: 0;
+        }
+        .suggestions li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--pico-border-color);
+        }
+        .suggestions li:last-child {
+            border-bottom: none;
+        }
+        .suggestions a {
+            color: var(--pico-warning);
+            text-decoration: none;
+        }
+        .suggestions a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="container">
+            <h1>404</h1>
+            <p>Oops! This game page doesn’t exist</p>
+        </div>
+    </div>
+
+    <main class="container">
+        <div class="error-content">
+            <div class="coffee-icon">🎮</div>
+            <h2>Page Not Found</h2>
+            <p>Sorry, we couldn't find the page you're looking for. It might have been moved, deleted, or you might have typed the wrong URL.</p>
+            
+            <div class="suggestions">
+                <h3>Here are some popular games you might like:</h3>
+                <ul>
+                    <li><a href="/games/zelda-totk">Zelda: Tears of the Kingdom</a> - Expansive adventure</li>
+                    <li><a href="/games/elden-ring">Elden Ring</a> - Open-world action RPG</li>
+                    <li><a href="/games/baldurs-gate-3">Baldur’s Gate 3</a> - Deep CRPG</li>
+                    <li><a href="/games/spider-man-2">Spider-Man 2</a> - High-flying action</li>
+                    <li><a href="/games/god-of-war-ragnarok">God of War Ragnarök</a> - Epic adventure</li>
+                </ul>
+            </div>
+            
+            <a href="/" role="button" class="secondary">← Back to All Games</a>
+        </div>
+    </main>
+</body>
+</html>

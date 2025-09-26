@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Video Game Details 🎮</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <style>
+        :root {
+            --pico-primary: #1a4d2e;
+            --pico-primary-hover: #0d2818;
+            --pico-primary-inverse: #ffffff;
+            --pico-secondary: #2d5a3d;
+            --pico-success: #4ade80;
+            --pico-warning: #ffd700;
+            --pico-info: #3b82f6;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--pico-primary-hover) 0%, var(--pico-primary) 100%);
+            padding: 2rem 0;
+            text-align: center;
+            border-bottom: 1px solid var(--pico-border-color);
+        }
+        .back-button {
+            margin-bottom: 2rem;
+        }
+        .back-button:hover {
+            color: var(--pico-warning);
+        }
+        .detail-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .detail-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border: 2px solid var(--pico-border-color);
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        .info-card {
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--pico-info);
+        }
+        .info-card h3 {
+            margin-bottom: 0.5rem;
+        }
+        .info-card p {
+            margin: 0;
+        }
+        .rating {
+            color: var(--pico-warning);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        .price-range {
+            color: var(--pico-success);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        .specialties {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .specialty-tag {
+            background: var(--pico-info);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .amenities {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .amenity {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--pico-secondary);
+            border-radius: 20px;
+        }
+        .loading {
+            text-align: center;
+            padding: 4rem;
+        }
+        .error {
+            text-align: center;
+            padding: 4rem;
+            color: var(--pico-del-color);
+        }
+        article {
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        article h2 {
+            border-bottom: 2px solid var(--pico-info);
+            padding-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="container">
+            <a href="/" class="back-button">← Back to Games</a>
+            <h1 id="game-title">Loading...</h1>
+        </div>
+    </div>
+
+    <main class="container">
+        <div id="loading" class="loading">
+            <p>Loading game details...</p>
+        </div>
+        
+        <div id="error" class="error" style="display: none;">
+            <h2>🎮 Game Not Found</h2>
+            <p>Sorry, we couldn't find the game you're looking for.</p>
+            <a href="/" role="button">Back to Games</a>
+        </div>
+        
+        <div id="detail-content" class="detail-container" style="display: none;">
+            <img id="detail-image" class="detail-image" src="" alt="">
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>⭐ Rating</h3>
+                    <p class="rating" id="rating"></p>
+                </div>
+                
+                <div class="info-card">
+                    <h3>💰 Price</h3>
+                    <p class="price-range" id="price"></p>
+                </div>
+                
+                <div class="info-card">
+                    <h3>🧩 Genre</h3>
+                    <p id="genre"></p>
+                </div>
+                
+                <div class="info-card">
+                    <h3>🖥️ Platform</h3>
+                    <p id="platform"></p>
+                </div>
+                
+                <div class="info-card">
+                    <h3>📅 Release Year</h3>
+                    <p id="releaseYear"></p>
+                </div>
+            </div>
+            
+            <article>
+                <h2>About This Game</h2>
+                <p id="description"></p>
+            </article>
+            
+            <article>
+                <h2>Details</h2>
+                <div id="details" class="specialties"></div>
+            </article>
+            
+            <article>
+                <h2>Modes</h2>
+                <div id="modes" class="amenities"></div>
+            </article>
+        </div>
+    </main>
+
+    <script>
+        // Get game ID from URL
+        function getGameId() {
+            const path = window.location.pathname;
+            const parts = path.split('/');
+            return parts[parts.length - 1];
+        }
+
+        // Load game details
+        async function loadGameDetails() {
+            const gameId = getGameId();
+            
+            try {
+                const response = await fetch(`/api/games/${gameId}`);
+                
+                if (!response.ok) {
+                    throw new Error('Game not found');
+                }
+                
+                const game = await response.json();
+                displayGameDetails(game);
+            } catch (error) {
+                console.error('Error loading game details:', error);
+                showError();
+            }
+        }
+
+        function displayGameDetails(game) {
+            // Update page title
+            document.getElementById('page-title').textContent = `${game.title} - Game Details`;
+            document.getElementById('game-title').textContent = game.title;
+            
+            // Update image
+            document.getElementById('detail-image').src = game.image;
+            document.getElementById('detail-image').alt = game.title;
+            
+            // Update basic info
+            document.getElementById('rating').textContent = `⭐ ${game.rating}`;
+            document.getElementById('price').textContent = game.price;
+            document.getElementById('genre').textContent = game.genre;
+            document.getElementById('platform').textContent = game.platform;
+            document.getElementById('releaseYear').textContent = game.releaseYear;
+            document.getElementById('description').textContent = game.description;
+            
+            // Update details (developer)
+            const detailsContainer = document.getElementById('details');
+            detailsContainer.innerHTML = `
+                <span class="specialty-tag">${game.developer}</span>
+            `;
+            
+            // Update modes
+            const modesContainer = document.getElementById('modes');
+            const modes = [];
+            modes.push(game.multiplayer ? '<div class="amenity"><span>👥</span> Multiplayer</div>' : '<div class="amenity"><span>🎮</span> Single Player</div>');
+            modesContainer.innerHTML = modes.join('');
+            
+            // Hide loading, show content
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('detail-content').style.display = 'block';
+        }
+
+        function showError() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
+        }
+
+        // Load details when page loads
+        document.addEventListener('DOMContentLoaded', loadGameDetails);
+    </script>
+</body>
+</html>

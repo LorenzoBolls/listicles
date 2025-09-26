@@ -1,0 +1,19 @@
+{
+  "name": "listicle-games",
+  "version": "1.0.0",
+  "description": "A listicle web app showcasing top video games",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": ["listicle", "games", "express", "web-app"],
+  "author": "Lorenzo Bolls",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
